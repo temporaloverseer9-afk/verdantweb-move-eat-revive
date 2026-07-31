@@ -15,7 +15,7 @@ export function AppShell({
   username,
 }: {
   children: React.ReactNode;
-  username?: string | null;
+  username?: string | null | undefined;
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
