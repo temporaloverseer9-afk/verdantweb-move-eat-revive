@@ -14,16 +14,80 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          total_points: number
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          total_points?: number
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          total_points?: number
+          username?: string
+        }
+        Relationships: []
+      }
+      trips: {
+        Row: {
+          avg_speed_kmh: number
+          created_at: string
+          distance_km: number
+          id: string
+          mode: Database["public"]["Enums"]["transit_mode"]
+          occurred_at: string
+          points: number
+          user_id: string
+          verified: boolean
+        }
+        Insert: {
+          avg_speed_kmh: number
+          created_at?: string
+          distance_km: number
+          id?: string
+          mode: Database["public"]["Enums"]["transit_mode"]
+          occurred_at?: string
+          points?: number
+          user_id: string
+          verified?: boolean
+        }
+        Update: {
+          avg_speed_kmh?: number
+          created_at?: string
+          distance_km?: number
+          id?: string
+          mode?: Database["public"]["Enums"]["transit_mode"]
+          occurred_at?: string
+          points?: number
+          user_id?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      weekly_leaderboard: {
+        Args: never
+        Returns: {
+          total_points: number
+          user_id: string
+          username: string
+          weekly_points: number
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      transit_mode: "walk" | "cycle" | "bus" | "train" | "car"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +214,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      transit_mode: ["walk", "cycle", "bus", "train", "car"],
+    },
   },
 } as const
