@@ -28,7 +28,7 @@ const rules = [
   { icon: Footprints, title: "Walking", detail: "2–8 km/h · step counter verified", points: "+5 / km" },
   { icon: Bike, title: "Cycling", detail: "10–25 km/h · accelerometer verified", points: "+3 / km" },
   { icon: Bus, title: "Bus & train", detail: "Route matched to transit lines", points: "+2 / km" },
-  { icon: Car, title: "Private car", detail: "Failed verification", points: "−1 / km" },
+  { icon: Car, title: "Private car", detail: "Logged honestly · reduced penalty", points: "−0.5 / km" },
 ];
 
 function Landing() {
