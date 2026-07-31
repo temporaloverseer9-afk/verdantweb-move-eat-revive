@@ -45,10 +45,10 @@ export const MODES: Record<
   },
   car: {
     label: "Private car",
-    rate: -1,
+    rate: -0.5,
     speed: [0, 200],
     defaultSpeed: 45,
-    sensor: "No human-effort signal — penalised",
+    sensor: "No human-effort signal — reduced penalty for logging honestly",
     emoji: "🚗",
   },
 };
