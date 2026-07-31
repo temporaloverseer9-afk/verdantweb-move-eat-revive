@@ -61,9 +61,14 @@ export function scoreTrip(mode: TransitMode, distanceKm: number, speedKmh: numbe
   else if (mode === "bus" || mode === "train") verified = speedKmh > 8;
   else verified = false;
 
-  const points = !verified
-    ? -Math.ceil(distanceKm)
-    : Math.round(distanceKm * MODES[mode].rate);
+  // An honestly logged car trip costs half; failed verification of an active
+  // mode keeps the full penalty.
+  const points =
+    mode === "car"
+      ? -Math.ceil(distanceKm / 2)
+      : !verified
+        ? -Math.ceil(distanceKm)
+        : Math.round(distanceKm * MODES[mode].rate);
 
   return { verified, points };
 }
