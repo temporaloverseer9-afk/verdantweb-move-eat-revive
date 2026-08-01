@@ -10,7 +10,8 @@ import { MODES, type TransitMode } from "@/lib/eco";
 
 const TripMap = lazy(() => import("@/components/TripMap"));
 
-const FALLBACK_CENTER: [number, number] = [51.5074, -0.1278];
+// VerdantWeb is Singapore-centred, so fall back to the city centre here.
+const FALLBACK_CENTER: [number, number] = [1.3521, 103.8198];
 
 export const Route = createFileRoute("/_authenticated/map")({
   head: () => ({
