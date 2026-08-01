@@ -60,8 +60,17 @@ function AuthPage() {
           },
         });
         if (error) throw error;
-        if (data.session) navigate({ to: "/dashboard" });
-        else toast.success("Check your email to confirm your account.");
+        if (data.session) {
+          navigate({ to: "/dashboard" });
+        } else {
+          // Account is auto-confirmed, so sign in right away.
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+          if (signInError) throw signInError;
+          navigate({ to: "/dashboard" });
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
