@@ -140,12 +140,19 @@ export function TripTracker() {
         setPath((prev) => [...prev, ping]);
       },
       (err) => {
-        setTracking(false);
-        stopWatch();
-        setPermission(err.code === err.PERMISSION_DENIED ? "denied" : permission);
-        toast.error("Location lost — tracking stopped");
+        if (err.code === err.PERMISSION_DENIED) {
+          setTracking(false);
+          stopWatch();
+          setPermission("denied");
+          toast.error("Location permission was revoked — tracking stopped");
+          return;
+        }
+        // Timeouts / temporary signal loss: keep the watch alive, the next
+        // successful fix simply resumes sampling.
+        toast.warning("Weak GPS signal — still trying…");
       },
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 30000 },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 45000 },
+
     );
   }
 
