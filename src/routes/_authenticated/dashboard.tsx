@@ -10,9 +10,9 @@ import { MODES, WEEKLY_GOAL, DAILY_GOAL, type TransitMode } from "@/lib/eco";
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "Eco-Scoreboard — EcoMove" },
+      { title: "Eco-Scoreboard — VerdantWeb" },
       { name: "description", content: "Your live eco-scoreboard: daily and weekly green points, distance covered and progress toward your goals." },
-      { property: "og:title", content: "Eco-Scoreboard — EcoMove" },
+      { property: "og:title", content: "Eco-Scoreboard — VerdantWeb" },
       { property: "og:description", content: "Track daily and weekly green points earned from verified trips." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

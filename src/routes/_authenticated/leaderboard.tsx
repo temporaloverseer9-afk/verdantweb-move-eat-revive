@@ -8,13 +8,13 @@ import { getMe, getLeaderboard } from "@/lib/eco.functions";
 export const Route = createFileRoute("/_authenticated/leaderboard")({
   head: () => ({
     meta: [
-      { title: "Weekly leaderboard — EcoMove" },
+      { title: "Weekly leaderboard — VerdantWeb" },
       {
         name: "description",
         content:
           "See how your weekly green points stack up against other EcoMove movers in your community.",
       },
-      { property: "og:title", content: "Weekly leaderboard — EcoMove" },
+      { property: "og:title", content: "Weekly leaderboard — VerdantWeb" },
       { property: "og:description", content: "Rankings by weekly green points earned from verified trips." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

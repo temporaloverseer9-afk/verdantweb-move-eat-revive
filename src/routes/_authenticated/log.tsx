@@ -15,13 +15,13 @@ import { MODES, scoreTrip, type TransitMode } from "@/lib/eco";
 export const Route = createFileRoute("/_authenticated/log")({
   head: () => ({
     meta: [
-      { title: "Daily log — EcoMove" },
+      { title: "Daily log & Eco Food — VerdantWeb" },
       {
         name: "description",
         content:
           "Every trip you've taken, its verified transit mode, distance and the green points it earned.",
       },
-      { property: "og:title", content: "Daily log — EcoMove" },
+      { property: "og:title", content: "Daily log & Eco Food — VerdantWeb" },
       { property: "og:description", content: "Review verified trips and the points each one earned." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

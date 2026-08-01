@@ -15,13 +15,13 @@ const FALLBACK_CENTER: [number, number] = [51.5074, -0.1278];
 export const Route = createFileRoute("/_authenticated/map")({
   head: () => ({
     meta: [
-      { title: "Live map — EcoMove" },
+      { title: "Live map — VerdantWeb" },
       {
         name: "description",
         content:
           "See where you are right now and trace the route of your most recent logged journey on the map.",
       },
-      { property: "og:title", content: "Live map — EcoMove" },
+      { property: "og:title", content: "Live map — VerdantWeb" },
       {
         property: "og:description",
         content: "Your current location plus the path of your latest trip.",

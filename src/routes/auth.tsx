@@ -11,9 +11,9 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — EcoMove" },
+      { title: "Sign in — VerdantWeb" },
       { name: "description", content: "Sign in or create your EcoMove account to start earning green points for walking, cycling and transit trips." },
-      { property: "og:title", content: "Sign in — EcoMove" },
+      { property: "og:title", content: "Sign in — VerdantWeb" },
       { property: "og:description", content: "Create your EcoMove account and start scoring your daily travel." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
