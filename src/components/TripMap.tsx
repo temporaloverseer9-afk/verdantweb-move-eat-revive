@@ -26,7 +26,7 @@ function seeded(seed: string) {
   };
 }
 
-/** Builds an approximate route of the right length around the given origin. */
+/** Builds an approximate off-road fallback shape if road routing is unavailable. */
 function buildRoute(origin: [number, number], distanceKm: number, seed: string) {
   const rand = seeded(seed);
   const steps = 24;
@@ -44,6 +44,88 @@ function buildRoute(origin: [number, number], distanceKm: number, seed: string) 
   }
   return points;
 }
+
+function haversineKm(a: [number, number], b: [number, number]) {
+  const R = 6371;
+  const dLat = ((b[0] - a[0]) * Math.PI) / 180;
+  const dLng = ((b[1] - a[1]) * Math.PI) / 180;
+  const la1 = (a[0] * Math.PI) / 180;
+  const la2 = (b[0] * Math.PI) / 180;
+  const h =
+    Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+/** Cuts a polyline so its total length equals the target distance. */
+function trimToDistance(points: [number, number][], targetKm: number) {
+  const out: [number, number][] = [points[0]!];
+  let acc = 0;
+  for (let i = 1; i < points.length; i++) {
+    const seg = haversineKm(points[i - 1]!, points[i]!);
+    if (acc + seg >= targetKm) {
+      const f = seg === 0 ? 0 : (targetKm - acc) / seg;
+      out.push([
+        points[i - 1]![0] + (points[i]![0] - points[i - 1]![0]) * f,
+        points[i - 1]![1] + (points[i]![1] - points[i - 1]![1]) * f,
+      ]);
+      return out;
+    }
+    acc += seg;
+    out.push(points[i]!);
+  }
+  return out;
+}
+
+function offset(origin: [number, number], km: number, heading: number): [number, number] {
+  const lat = origin[0] + (km / 111) * Math.cos(heading);
+  const lng =
+    origin[1] + (km / (111 * Math.cos((origin[0] * Math.PI) / 180))) * Math.sin(heading);
+  return [lat, lng];
+}
+
+/**
+ * Snaps the journey to the real street/path network via OSRM, so the line follows
+ * roads and park paths instead of cutting through private homes.
+ */
+async function buildRoadRoute(
+  origin: [number, number],
+  distanceKm: number,
+  seed: string,
+  signal: AbortSignal,
+): Promise<[number, number][] | null> {
+  const rand = seeded(seed);
+  const heading = rand() * Math.PI * 2;
+
+  for (const factor of [0.62, 0.8, 1.0, 1.3]) {
+    const dest = offset(origin, distanceKm * factor, heading);
+    const via = offset(origin, distanceKm * factor * 0.55, heading + (rand() - 0.5) * 1.2);
+    const coords = `${origin[1]},${origin[0]};${via[1]},${via[0]};${dest[1]},${dest[0]}`;
+    try {
+      const res = await fetch(
+        `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`,
+        { signal },
+      );
+      if (!res.ok) continue;
+      const data = (await res.json()) as {
+        code: string;
+        routes?: { distance: number; geometry: { coordinates: [number, number][] } }[];
+      };
+      const route = data.routes?.[0];
+      if (data.code !== "Ok" || !route) continue;
+      const line = route.geometry.coordinates.map(
+        ([lng, lat]) => [lat, lng] as [number, number],
+      );
+      if (route.distance / 1000 >= distanceKm * 0.98) {
+        return trimToDistance(line, distanceKm);
+      }
+      if (factor === 1.3) return line;
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
 
 export default function TripMap({
   center,
@@ -87,34 +169,44 @@ export default function TripMap({
         .bindTooltip("You are here"),
     );
 
+    const controller = new AbortController();
+
     if (trip) {
-      const route = buildRoute(center, trip.distanceKm, trip.id);
-      const line = L.polyline(route, {
-        color: trip.points >= 0 ? "#16a34a" : "#dc2626",
-        weight: 5,
-        opacity: 0.85,
-      }).addTo(map);
-      layers.push(line);
-      layers.push(
-        L.circleMarker(route[route.length - 1]!, {
-          radius: 7,
-          color: "#ffffff",
-          weight: 3,
-          fillColor: trip.points >= 0 ? "#16a34a" : "#dc2626",
-          fillOpacity: 1,
-        })
-          .addTo(map)
-          .bindTooltip("Trip end"),
-      );
-      map.fitBounds(line.getBounds().pad(0.25));
+      const draw = (route: [number, number][]) => {
+        if (controller.signal.aborted || !mapRef.current) return;
+        const line = L.polyline(route, {
+          color: trip.points >= 0 ? "#16a34a" : "#dc2626",
+          weight: 5,
+          opacity: 0.85,
+        }).addTo(map);
+        layers.push(line);
+        layers.push(
+          L.circleMarker(route[route.length - 1]!, {
+            radius: 7,
+            color: "#ffffff",
+            weight: 3,
+            fillColor: trip.points >= 0 ? "#16a34a" : "#dc2626",
+            fillOpacity: 1,
+          })
+            .addTo(map)
+            .bindTooltip("Trip end"),
+        );
+        map.fitBounds(line.getBounds().pad(0.25));
+      };
+
+      buildRoadRoute(center, trip.distanceKm, trip.id, controller.signal)
+        .then((road) => draw(road ?? buildRoute(center, trip.distanceKm, trip.id)))
+        .catch(() => draw(buildRoute(center, trip.distanceKm, trip.id)));
     } else {
       map.setView(center, 14);
     }
 
     return () => {
+      controller.abort();
       layers.forEach((l) => l.remove());
     };
   }, [center[0], center[1], trip?.id]);
+
 
   return <div ref={nodeRef} className="h-[420px] w-full rounded-xl" />;
 }

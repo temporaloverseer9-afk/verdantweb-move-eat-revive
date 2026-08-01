@@ -129,8 +129,8 @@ function MapPage() {
             </p>
             <p className="text-xs text-muted-foreground">
               {new Date(latest.occurredAt).toLocaleString()} ·{" "}
-              {latest.verified ? "verified" : "unverified"} · route shape is an approximation, since
-              manual trips have no GPS trace.
+              {latest.verified ? "verified" : "unverified"} · route is snapped to real streets and
+              paths, since manual trips have no GPS trace.
             </p>
           </div>
         ) : (
