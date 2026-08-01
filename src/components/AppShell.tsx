@@ -43,7 +43,7 @@ export function AppShell({
 
             <span className="leading-tight">
               <span className="block font-display text-lg font-bold">VerdantWeb</span>
-              <span className="block text-[11px] text-muted-foreground">EcoMove · Eco Food</span>
+              <span className="block text-[11px] text-muted-foreground">EcoMove · Eco Food · Eco Travel</span>
             </span>
           </Link>
           <div className="flex items-center gap-2">
