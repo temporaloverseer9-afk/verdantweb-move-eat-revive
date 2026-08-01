@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Leaf, LayoutDashboard, ScrollText, Trophy, LogOut, Map, User } from "lucide-react";
+import { LayoutDashboard, ScrollText, Trophy, LogOut, Map, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -35,9 +35,13 @@ export function AppShell({
       <header className="sticky top-0 z-20 border-b border-border/70 bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <span className="gradient-eco flex size-9 items-center justify-center rounded-xl text-primary-foreground">
-              <Leaf className="size-5" />
-            </span>
+            <img
+              src="/verdantweb-logo.png"
+              alt="VerdantWeb"
+              width={36}
+              height={36}
+              className="size-9 rounded-xl object-cover"
+            />
             <span className="leading-tight">
               <span className="block font-display text-lg font-bold">VerdantWeb</span>
               <span className="block text-[11px] text-muted-foreground">EcoMove · Eco Food</span>
