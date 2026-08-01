@@ -8,7 +8,10 @@ export type MapTrip = {
   distanceKm: number;
   verified: boolean;
   points: number;
+  /** Real recorded GPS trace, when the trip was tracked live. */
+  path?: [number, number][];
 };
+
 
 /** Deterministic pseudo-random generator so a trip always draws the same shape. */
 function seeded(seed: string) {
