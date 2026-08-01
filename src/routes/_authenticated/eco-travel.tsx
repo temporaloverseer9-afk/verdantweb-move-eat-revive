@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -12,6 +12,8 @@ import {
   tripEmissionsKg,
   type TravelScope,
 } from "@/lib/travel";
+
+const TravelMap = lazy(() => import("@/components/TravelMap"));
 
 export const Route = createFileRoute("/_authenticated/eco-travel")({
   head: () => ({
@@ -40,6 +42,16 @@ function EcoTravelPage() {
   const me = useServerFn(getMe);
   const profileQuery = useQuery({ queryKey: ["me"], queryFn: () => me({}) });
   const [scope, setScope] = useState<TravelScope>("international");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const cardRefs = useRef<Record<string, HTMLLIElement | null>>({});
+
+  useEffect(() => {
+    setSelectedId(null);
+  }, [scope]);
+
+  useEffect(() => {
+    if (selectedId) cardRefs.current[selectedId]?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [selectedId]);
 
   const places = useMemo(
     () =>
@@ -82,6 +94,22 @@ function EcoTravelPage() {
         ))}
       </div>
 
+      <section className="surface-card mt-5 overflow-hidden p-2">
+        <Suspense
+          fallback={
+            <div className="flex h-[440px] items-center justify-center text-sm text-muted-foreground">
+              Loading map…
+            </div>
+          }
+        >
+          <TravelMap places={places} selectedId={selectedId} onSelect={setSelectedId} />
+        </Suspense>
+      </section>
+      <p className="mt-2 text-xs text-muted-foreground">
+        Each pin is a destination; the line shows the suggested low-carbon route and mode from its
+        departure point. Tap a pin or a card to highlight it.
+      </p>
+
       <ul className="mt-5 space-y-4">
         {places.map((d) => {
           const emitted = tripEmissionsKg(d);
@@ -89,7 +117,16 @@ function EcoTravelPage() {
           const saved = Math.max(0, baseline - emitted);
           const mode = TRAVEL_MODES[d.mode];
           return (
-            <li key={d.id} className="rounded-2xl border border-border bg-card p-5">
+            <li
+              key={d.id}
+              ref={(el) => {
+                cardRefs.current[d.id] = el;
+              }}
+              onClick={() => setSelectedId(d.id)}
+              className={`cursor-pointer rounded-2xl border bg-card p-5 transition-colors ${
+                selectedId === d.id ? "border-primary ring-1 ring-primary/40" : "border-border"
+              }`}
+            >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <h2 className="font-display text-lg font-semibold">
