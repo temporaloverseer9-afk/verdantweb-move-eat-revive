@@ -8,7 +8,10 @@ export type MapTrip = {
   distanceKm: number;
   verified: boolean;
   points: number;
+  /** Real recorded GPS trace, when the trip was tracked live. */
+  path?: [number, number][];
 };
+
 
 /** Deterministic pseudo-random generator so a trip always draws the same shape. */
 function seeded(seed: string) {
@@ -194,9 +197,15 @@ export default function TripMap({
         map.fitBounds(line.getBounds().pad(0.25));
       };
 
-      buildRoadRoute(center, trip.distanceKm, trip.id, controller.signal)
-        .then((road) => draw(road ?? buildRoute(center, trip.distanceKm, trip.id)))
-        .catch(() => draw(buildRoute(center, trip.distanceKm, trip.id)));
+      if (trip.path && trip.path.length >= 2) {
+        // Real GPS trace — draw exactly what was recorded.
+        draw(trip.path);
+      } else {
+        buildRoadRoute(center, trip.distanceKm, trip.id, controller.signal)
+          .then((road) => draw(road ?? buildRoute(center, trip.distanceKm, trip.id)))
+          .catch(() => draw(buildRoute(center, trip.distanceKm, trip.id)));
+      }
+
     } else {
       map.setView(center, 14);
     }
