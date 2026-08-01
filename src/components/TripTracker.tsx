@@ -243,7 +243,7 @@ export function TripTracker() {
         <Button
           className="mt-4 w-full"
           onClick={start}
-          disabled={mutation.isPending || permission === "denied"}
+          disabled={mutation.isPending}
         >
           <Play className="size-4" /> {mutation.isPending ? "Saving…" : "Start tracking"}
         </Button>
