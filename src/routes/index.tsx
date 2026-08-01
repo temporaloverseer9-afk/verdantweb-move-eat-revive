@@ -10,24 +10,50 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "EcoMove — Earn green points for how you travel" },
+      { title: "VerdantWeb — Earn green points for how you travel" },
       {
         name: "description",
         content:
-          "EcoMove turns walking, cycling and public transit into green points. Log trips, track your daily eco-score and climb the weekly leaderboard.",
+          "VerdantWeb turns walking, cycling and public transit into green points. Log trips, track your daily eco-score and climb the weekly leaderboard.",
       },
-      { property: "og:title", content: "EcoMove — Earn green points for how you travel" },
+      { property: "og:title", content: "VerdantWeb — Earn green points for how you travel" },
       {
         property: "og:description",
         content:
           "Verified walking, cycling and transit trips earn points. Private car trips cost you. Track your eco-score daily.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://verdantweb-move-eat-revive.lovable.app/" },
       { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "https://verdantweb-move-eat-revive.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              name: "VerdantWeb",
+              url: "https://verdantweb-move-eat-revive.lovable.app/",
+              description:
+                "VerdantWeb tracks walking, cycling and transit trips plus food choices, scoring them as green points on a daily eco-scoreboard and weekly leaderboard.",
+            },
+            {
+              "@type": "Organization",
+              name: "VerdantWeb",
+              url: "https://verdantweb-move-eat-revive.lovable.app/",
+              logo: "https://verdantweb-move-eat-revive.lovable.app/verdantweb-logo.png",
+            },
+          ],
+        }),
+      },
     ],
   }),
   component: Landing,
 });
+
 
 const rules = [
   { icon: Footprints, title: "Walking", detail: "2–8 km/h · step counter verified", points: "+5 / km" },
@@ -55,7 +81,7 @@ function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-3xl px-4 py-16">
+      <main className="mx-auto max-w-3xl px-4 py-16">
         <div className="flex items-center justify-between gap-2">
           <BrandLogo size={48} className="size-12 rounded-2xl shadow-lift" />
 
@@ -65,10 +91,11 @@ function Landing() {
           Every kilometre you move counts.
         </h1>
         <p className="mt-4 max-w-xl text-lg text-muted-foreground">
-          EcoMove scores your daily travel. Verified human-powered and public transit trips earn
+          VerdantWeb scores your daily travel. Verified human-powered and public transit trips earn
           green points — private car trips cost you. Track a live eco-scoreboard and race your
           friends every week.
         </p>
+
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild size="lg">
@@ -94,7 +121,8 @@ function Landing() {
             </div>
           ))}
         </div>
-      </div>
+      </main>
+
     </div>
   );
 }

@@ -80,14 +80,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "EcoMove — Green points for how you travel" },
+      { title: "VerdantWeb — Green points for how you travel" },
       {
         name: "description",
         content:
           "Turn walking, cycling and transit into green points. Track your eco-score and climb the weekly leaderboard.",
       },
-      { name: "author", content: "EcoMove" },
-      { property: "og:title", content: "EcoMove — Green points for how you travel" },
+      { name: "author", content: "VerdantWeb" },
+      { property: "og:title", content: "VerdantWeb — Green points for how you travel" },
       {
         property: "og:description",
         content: "Turn walking, cycling and transit into green points.",
