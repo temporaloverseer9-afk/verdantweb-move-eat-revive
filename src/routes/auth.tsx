@@ -91,13 +91,8 @@ function AuthPage() {
       <div className="w-full max-w-sm">
         <div className="mb-8 flex items-center justify-between gap-2">
           <Link to="/" className="flex items-center gap-2">
-            <img
-              src="/verdantweb-logo.png"
-              alt="VerdantWeb"
-              width={36}
-              height={36}
-              className="size-9 rounded-xl object-cover"
-            />
+            <BrandLogo size={36} className="size-9 rounded-xl" />
+
             <span className="font-display text-lg font-bold">VerdantWeb</span>
           </Link>
           <ThemeToggle />
