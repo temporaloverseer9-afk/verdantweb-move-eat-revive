@@ -10,24 +10,50 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "EcoMove — Earn green points for how you travel" },
+      { title: "VerdantWeb — Earn green points for how you travel" },
       {
         name: "description",
         content:
-          "EcoMove turns walking, cycling and public transit into green points. Log trips, track your daily eco-score and climb the weekly leaderboard.",
+          "VerdantWeb turns walking, cycling and public transit into green points. Log trips, track your daily eco-score and climb the weekly leaderboard.",
       },
-      { property: "og:title", content: "EcoMove — Earn green points for how you travel" },
+      { property: "og:title", content: "VerdantWeb — Earn green points for how you travel" },
       {
         property: "og:description",
         content:
           "Verified walking, cycling and transit trips earn points. Private car trips cost you. Track your eco-score daily.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://verdantweb-move-eat-revive.lovable.app/" },
       { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "https://verdantweb-move-eat-revive.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              name: "VerdantWeb",
+              url: "https://verdantweb-move-eat-revive.lovable.app/",
+              description:
+                "VerdantWeb tracks walking, cycling and transit trips plus food choices, scoring them as green points on a daily eco-scoreboard and weekly leaderboard.",
+            },
+            {
+              "@type": "Organization",
+              name: "VerdantWeb",
+              url: "https://verdantweb-move-eat-revive.lovable.app/",
+              logo: "https://verdantweb-move-eat-revive.lovable.app/verdantweb-logo.png",
+            },
+          ],
+        }),
+      },
     ],
   }),
   component: Landing,
 });
+
 
 const rules = [
   { icon: Footprints, title: "Walking", detail: "2–8 km/h · step counter verified", points: "+5 / km" },
