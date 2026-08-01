@@ -36,7 +36,10 @@ export function AppShell({
             <span className="gradient-eco flex size-9 items-center justify-center rounded-xl text-primary-foreground">
               <Leaf className="size-5" />
             </span>
-            <span className="font-display text-lg font-bold">EcoMove</span>
+            <span className="leading-tight">
+              <span className="block font-display text-lg font-bold">VerdantWeb</span>
+              <span className="block text-[11px] text-muted-foreground">EcoMove · Eco Food</span>
+            </span>
           </Link>
           <div className="flex items-center gap-2">
             {username ? (
