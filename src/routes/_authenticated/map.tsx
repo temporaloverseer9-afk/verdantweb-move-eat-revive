@@ -41,31 +41,54 @@ function MapPage() {
   const tripsQuery = useQuery({ queryKey: ["trips"], queryFn: () => trips({}) });
 
   const [center, setCenter] = useState<[number, number] | null>(null);
+  const [accuracy, setAccuracy] = useState<number | null>(null);
   const [status, setStatus] = useState<"idle" | "locating" | "denied">("idle");
+  const watchId = useRef<number | null>(null);
 
-  function locate() {
+  const clearWatch = useCallback(() => {
+    if (watchId.current !== null && typeof navigator !== "undefined") {
+      navigator.geolocation.clearWatch(watchId.current);
+      watchId.current = null;
+    }
+  }, []);
+
+  const locate = useCallback(() => {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
       setStatus("denied");
       setCenter(FALLBACK_CENTER);
       return;
     }
+    clearWatch();
     setStatus("locating");
-    navigator.geolocation.getCurrentPosition(
+    let best = Infinity;
+    const started = Date.now();
+    // Keep sampling until the fix tightens up — the first fix is often a
+    // coarse IP/wifi guess that can be hundreds of km off.
+    watchId.current = navigator.geolocation.watchPosition(
       (pos) => {
-        setCenter([pos.coords.latitude, pos.coords.longitude]);
+        const acc = pos.coords.accuracy ?? Infinity;
+        if (acc <= best) {
+          best = acc;
+          setCenter([pos.coords.latitude, pos.coords.longitude]);
+          setAccuracy(acc);
+        }
         setStatus("idle");
+        if (acc <= 50 || Date.now() - started > 20000) clearWatch();
       },
       () => {
+        clearWatch();
         setStatus("denied");
-        setCenter(FALLBACK_CENTER);
+        setCenter((c) => c ?? FALLBACK_CENTER);
       },
-      { enableHighAccuracy: true, timeout: 10000 },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 25000 },
     );
-  }
+  }, [clearWatch]);
 
   useEffect(() => {
     locate();
-  }, []);
+    return clearWatch;
+  }, [locate, clearWatch]);
+
 
   const latest = tripsQuery.data?.[0] ?? null;
 
