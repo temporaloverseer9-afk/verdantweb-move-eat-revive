@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Clock, MapPin, Leaf } from "lucide-react";
+import { Clock, MapPin, Leaf, ExternalLink } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { getMe } from "@/lib/eco.functions";
 import {
@@ -13,6 +13,7 @@ import {
   routeSummary,
   type TravelScope,
 } from "@/lib/travel";
+import { TRAVEL_IMAGES, googleMapsUrl } from "@/lib/travel-images";
 
 const TravelMap = lazy(() => import("@/components/TravelMap"));
 
@@ -184,10 +185,28 @@ function EcoTravelPage() {
                 selectedId === d.id ? "border-primary ring-1 ring-primary/40" : "border-border"
               }`}
             >
+              <img
+                src={TRAVEL_IMAGES[d.id]}
+                alt={`${d.name}, ${d.country}`}
+                loading="lazy"
+                width={768}
+                height={512}
+                className="mb-4 h-44 w-full rounded-xl object-cover sm:h-52"
+              />
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <h2 className="font-display text-lg font-semibold">
-                    {d.name}
+                    <a
+                      href={googleMapsUrl(d.name, d.country)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1 text-primary underline-offset-4 hover:underline"
+                    >
+                      {d.name}
+                      <ExternalLink className="size-3.5" aria-hidden />
+                      <span className="sr-only">— view on Google Maps</span>
+                    </a>
                     <span className="ml-2 text-sm font-normal text-muted-foreground">{d.country}</span>
                   </h2>
                   <p className="mt-1 text-sm text-muted-foreground">{d.blurb}</p>
