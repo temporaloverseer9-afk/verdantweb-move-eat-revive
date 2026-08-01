@@ -10,6 +10,7 @@ import {
   TRAVEL_MODES,
   baselineEmissionsKg,
   tripEmissionsKg,
+  routeSummary,
   type TravelScope,
 } from "@/lib/travel";
 
@@ -48,6 +49,12 @@ function EcoTravelPage() {
   useEffect(() => {
     setSelectedId(null);
   }, [scope]);
+
+  const selected = useMemo(
+    () => places.find((d) => d.id === selectedId) ?? null,
+    [places, selectedId],
+  );
+  const summary = useMemo(() => (selected ? routeSummary(selected) : null), [selected]);
 
   useEffect(() => {
     if (selectedId) cardRefs.current[selectedId]?.scrollIntoView({ behavior: "smooth", block: "center" });
