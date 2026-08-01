@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://verdantweb-move-eat-revive.lovable.app/sitemap.xml
