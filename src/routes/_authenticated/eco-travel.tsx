@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Clock, MapPin, Leaf } from "lucide-react";
+import { Clock, MapPin, Leaf, ExternalLink } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { getMe } from "@/lib/eco.functions";
 import {
@@ -13,6 +13,7 @@ import {
   routeSummary,
   type TravelScope,
 } from "@/lib/travel";
+import { TRAVEL_IMAGES, googleMapsUrl } from "@/lib/travel-images";
 
 const TravelMap = lazy(() => import("@/components/TravelMap"));
 
