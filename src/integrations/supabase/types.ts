@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      food_logs: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          note: string | null
+          occurred_at: string
+          points: number
+          tier: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          note?: string | null
+          occurred_at?: string
+          points?: number
+          tier: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          note?: string | null
+          occurred_at?: string
+          points?: number
+          tier?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
