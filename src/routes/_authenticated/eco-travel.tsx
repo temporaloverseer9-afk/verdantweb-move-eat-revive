@@ -162,7 +162,52 @@ function EcoTravelPage() {
             Route total {kg(summary!.totalKg)} CO₂e · same distance by {summary!.baselineLabel} would
             emit {kg(summary!.baselineKg)}.
           </p>
+
+          {(() => {
+            const cc = costComparison(selected);
+            if (!cc)
+              return (
+                <p className="mt-3 rounded-xl border border-dashed border-border px-3 py-2 text-xs text-muted-foreground">
+                  No driving comparison — {selected.name} is only reachable by sea.
+                </p>
+              );
+            return (
+              <div className="mt-4 rounded-xl border border-border p-3">
+                <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                  Cost vs driving yourself
+                </p>
+                <div className="mt-2 grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Eco fare</p>
+                    <p className="font-display font-semibold text-primary">{formatCost(cc.eco)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Private car (fuel, tolls, parking)</p>
+                    <p className="font-display font-semibold">{formatCost(cc.car)}</p>
+                  </div>
+                  {cc.rideHail ? (
+                    <div>
+                      <p className="text-xs text-muted-foreground">Taxi / ride-hail</p>
+                      <p className="font-display font-semibold">{formatCost(cc.rideHail)}</p>
+                    </div>
+                  ) : null}
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  You keep roughly{" "}
+                  <span className="font-semibold text-primary">
+                    S${cc.savedMid.toFixed(2)} ({cc.savedPct}% cheaper)
+                  </span>{" "}
+                  one-way versus driving
+                  {cc.rideHailSavedMid !== null
+                    ? `, or about S$${cc.rideHailSavedMid.toFixed(2)} versus a taxi`
+                    : ""}
+                  .
+                </p>
+              </div>
+            );
+          })()}
         </section>
+
       ) : (
         <p className="mt-2 text-xs text-muted-foreground">
           Each pin is a destination; the line shows the suggested low-carbon route and mode from its
