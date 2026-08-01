@@ -75,6 +75,7 @@ export const getLeaderboard = createServerFn({ method: "GET" })
     return (data ?? []).map((r) => ({
       userId: r.user_id,
       username: r.username,
+      avatar: r.avatar,
       weeklyPoints: Number(r.weekly_points),
       totalPoints: r.total_points,
     }));

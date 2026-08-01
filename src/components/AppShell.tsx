@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { Leaf, LayoutDashboard, ScrollText, Trophy, LogOut, Map } from "lucide-react";
+import { Leaf, LayoutDashboard, ScrollText, Trophy, LogOut, Map, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -10,6 +10,7 @@ const tabs = [
   { to: "/log", label: "Daily log", icon: ScrollText },
   { to: "/map", label: "Map", icon: Map },
   { to: "/leaderboard", label: "Leaderboard", icon: Trophy },
+  { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
 export function AppShell({
