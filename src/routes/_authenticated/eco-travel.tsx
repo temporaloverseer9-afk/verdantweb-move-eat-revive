@@ -10,6 +10,7 @@ import {
   TRAVEL_MODES,
   baselineEmissionsKg,
   tripEmissionsKg,
+  routeSummary,
   type TravelScope,
 } from "@/lib/travel";
 
@@ -49,15 +50,22 @@ function EcoTravelPage() {
     setSelectedId(null);
   }, [scope]);
 
-  useEffect(() => {
-    if (selectedId) cardRefs.current[selectedId]?.scrollIntoView({ behavior: "smooth", block: "center" });
-  }, [selectedId]);
-
   const places = useMemo(
     () =>
       DESTINATIONS.filter((d) => d.scope === scope).sort((a, b) => a.distanceKm - b.distanceKm),
     [scope],
   );
+
+  const selected = useMemo(
+    () => places.find((d) => d.id === selectedId) ?? null,
+    [places, selectedId],
+  );
+  const summary = useMemo(() => (selected ? routeSummary(selected) : null), [selected]);
+
+  useEffect(() => {
+    if (selectedId) cardRefs.current[selectedId]?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [selectedId]);
+
 
   return (
     <AppShell username={profileQuery.data?.username}>
@@ -105,10 +113,59 @@ function EcoTravelPage() {
           <TravelMap places={places} selectedId={selectedId} onSelect={setSelectedId} />
         </Suspense>
       </section>
-      <p className="mt-2 text-xs text-muted-foreground">
-        Each pin is a destination; the line shows the suggested low-carbon route and mode from its
-        departure point. Tap a pin or a card to highlight it.
-      </p>
+      {selected ? (
+        <section className="surface-card mt-3 p-5" aria-live="polite">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="font-display text-lg font-semibold">{selected.name} route summary</h2>
+              <p className="text-xs text-muted-foreground">
+                {summary!.totalKm.toFixed(1)} km total · vs {summary!.baselineLabel}
+              </p>
+            </div>
+            <div className="rounded-xl bg-primary/10 px-4 py-2 text-right">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-primary">
+                Total CO₂e saved
+              </p>
+              <p className="font-display text-xl font-bold text-primary">
+                {kg(summary!.savedKg)}{" "}
+                <span className="text-xs font-medium">({summary!.savedPct}% less)</span>
+              </p>
+            </div>
+          </div>
+
+          <ul className="mt-4 space-y-2">
+            {summary!.legs.map((leg) => (
+              <li
+                key={leg.label}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border px-3 py-2 text-sm"
+              >
+                <span className="flex items-center gap-2">
+                  <span aria-hidden>{TRAVEL_MODES[leg.mode].emoji}</span>
+                  <span className="font-medium">{leg.label}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {TRAVEL_MODES[leg.mode].label}
+                  </span>
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {leg.distanceKm.toFixed(1)} km ·{" "}
+                  <span className="font-semibold text-foreground">{kg(leg.emissionsKg)} CO₂e</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-3 text-xs text-muted-foreground">
+            Route total {kg(summary!.totalKg)} CO₂e · same distance by {summary!.baselineLabel} would
+            emit {kg(summary!.baselineKg)}.
+          </p>
+        </section>
+      ) : (
+        <p className="mt-2 text-xs text-muted-foreground">
+          Each pin is a destination; the line shows the suggested low-carbon route and mode from its
+          departure point. Tap a pin or a card to see per-leg emissions and total CO₂e saved.
+        </p>
+      )}
+
 
       <ul className="mt-5 space-y-4">
         {places.map((d) => {
