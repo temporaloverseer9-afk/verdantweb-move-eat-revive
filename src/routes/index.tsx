@@ -81,7 +81,7 @@ function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-3xl px-4 py-16">
+      <main className="mx-auto max-w-3xl px-4 py-16">
         <div className="flex items-center justify-between gap-2">
           <BrandLogo size={48} className="size-12 rounded-2xl shadow-lift" />
 
@@ -91,10 +91,11 @@ function Landing() {
           Every kilometre you move counts.
         </h1>
         <p className="mt-4 max-w-xl text-lg text-muted-foreground">
-          EcoMove scores your daily travel. Verified human-powered and public transit trips earn
+          VerdantWeb scores your daily travel. Verified human-powered and public transit trips earn
           green points — private car trips cost you. Track a live eco-scoreboard and race your
           friends every week.
         </p>
+
 
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild size="lg">
