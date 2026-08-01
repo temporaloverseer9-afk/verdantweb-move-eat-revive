@@ -106,11 +106,16 @@ function MapPage() {
         </Button>
       </div>
 
-      {status === "denied" && (
+      {status === "denied" ? (
         <p className="mt-3 text-xs text-muted-foreground">
-          Location unavailable — showing a default city centre instead.
+          Location unavailable — showing Singapore city centre instead.
         </p>
-      )}
+      ) : accuracy !== null ? (
+        <p className="mt-3 text-xs text-muted-foreground">
+          GPS fix accurate to ±{Math.round(accuracy)} m
+          {accuracy > 200 ? " — move outdoors for a sharper fix." : "."}
+        </p>
+      ) : null}
 
       <section className="surface-card mt-5 overflow-hidden p-2">
         {center ? (
