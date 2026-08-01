@@ -34,6 +34,22 @@ const rules = [
 ];
 
 function Landing() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    let active = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (active && data.session) navigate({ to: "/dashboard", replace: true });
+    });
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) navigate({ to: "/dashboard", replace: true });
+    });
+    return () => {
+      active = false;
+      data.subscription.unsubscribe();
+    };
+  }, [navigate]);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-3xl px-4 py-16">
