@@ -33,7 +33,16 @@ export type Destination = {
   from: string;
   blurb: string;
   highlights: string[];
+  /** Typical one-way fare per person in SGD [low, high]. 0 = free. */
+  costSgd: [number, number];
 };
+
+/** Formats a fare range as SGD text. */
+export function formatCost([low, high]: [number, number]) {
+  if (low === 0 && high === 0) return "Free";
+  if (low === high) return `S$${low.toFixed(2)}`;
+  return `S$${low.toFixed(2)}–${high.toFixed(2)}`;
+}
 
 export const DESTINATIONS: Destination[] = [
   // ── International (low-carbon border hops) ─────────────────────────────
@@ -49,6 +58,7 @@ export const DESTINATIONS: Destination[] = [
     blurb:
       "The classic day trip across the Causeway. Cross-border coaches carry dozens of passengers, so the per-head footprint stays tiny.",
     highlights: ["Jalan Dhoby heritage shophouses", "Johor Bahru Old Chinese Temple", "Night markets"],
+    costSgd: [5, 8],
   },
   {
     id: "batam",
@@ -62,6 +72,7 @@ export const DESTINATIONS: Destination[] = [
     blurb:
       "A one-hour boat ride to Riau Island beaches and seafood. Ferries beat any flight on this route by a wide margin.",
     highlights: ["Nongsa beaches", "Barelang Bridge", "Seafood kelongs"],
+    costSgd: [50, 68],
   },
   {
     id: "bintan",
@@ -74,6 +85,7 @@ export const DESTINATIONS: Destination[] = [
     from: "Tanah Merah Ferry Terminal",
     blurb: "Quiet mangroves and long sand beaches, reachable entirely by boat.",
     highlights: ["Mangrove river tour", "Trikora Beach", "Bintan Lagoon"],
+    costSgd: [58, 80],
   },
   {
     id: "desaru",
@@ -86,6 +98,7 @@ export const DESTINATIONS: Destination[] = [
     from: "Tanah Merah Ferry Terminal",
     blurb: "East-coast Johor beaches via a direct ferry link — no long road transfer needed.",
     highlights: ["Desaru beach walk", "Fruit farm tours", "Sungai Lebam kayaking"],
+    costSgd: [60, 90],
   },
   {
     id: "melaka",
@@ -99,6 +112,7 @@ export const DESTINATIONS: Destination[] = [
     blurb:
       "A UNESCO-listed old town within a single coach ride. Still a fraction of the emissions of the equivalent flight.",
     highlights: ["Jonker Street", "Dutch Square", "Melaka River walk"],
+    costSgd: [25, 45],
   },
   {
     id: "kuala-lumpur",
@@ -112,6 +126,7 @@ export const DESTINATIONS: Destination[] = [
     blurb:
       "Take the Shuttle Tebrau then the KTM Electric Train Service north. Slower than flying, but a fraction of the carbon.",
     highlights: ["Batu Caves", "Merdeka Square", "Lake Gardens"],
+    costSgd: [35, 60],
   },
   {
     id: "penang",
@@ -124,6 +139,7 @@ export const DESTINATIONS: Destination[] = [
     from: "Woodlands CIQ → Butterworth",
     blurb: "The long, scenic overland run to George Town — an overnight-style rail adventure.",
     highlights: ["George Town street art", "Penang Hill", "Kek Lok Si Temple"],
+    costSgd: [60, 100],
   },
 
   // ── Local (Singapore) ──────────────────────────────────────────────────
@@ -138,6 +154,7 @@ export const DESTINATIONS: Destination[] = [
     from: "Changi Point Ferry Terminal",
     blurb: "Singapore's last kampong. Bumboat over, then explore entirely by bicycle.",
     highlights: ["Chek Jawa wetlands", "Ubin Quarry", "Bike loop trails"],
+    costSgd: [4, 4],
   },
   {
     id: "coney-island",
@@ -150,6 +167,7 @@ export const DESTINATIONS: Destination[] = [
     from: "Punggol Waterway",
     blurb: "Rustic coastal woodland linked straight into the Round Island Route — zero-emission access.",
     highlights: ["Casuarina Exploration Trail", "Beach areas A–E", "Birdwatching hides"],
+    costSgd: [0, 0],
   },
   {
     id: "southern-ridges",
@@ -162,6 +180,7 @@ export const DESTINATIONS: Destination[] = [
     from: "HarbourFront MRT",
     blurb: "Ten kilometres of connected parks and canopy bridges, walkable end to end.",
     highlights: ["Henderson Waves", "Forest Walk", "Mount Faber"],
+    costSgd: [0, 0],
   },
   {
     id: "sungei-buloh",
@@ -174,6 +193,7 @@ export const DESTINATIONS: Destination[] = [
     from: "Kranji MRT",
     blurb: "Mangrove boardwalks and migratory birds at the north-west edge of the island.",
     highlights: ["Migratory bird hides", "Mangrove boardwalk", "Mudflat crabs"],
+    costSgd: [2.5, 3],
   },
   {
     id: "st-johns",
@@ -186,6 +206,7 @@ export const DESTINATIONS: Destination[] = [
     from: "Marina South Pier",
     blurb: "Quiet Southern Islands lagoons a short public ferry hop from the mainland.",
     highlights: ["Lazarus beach", "Island causeway walk", "Kias picnic spots"],
+    costSgd: [15, 18],
   },
   {
     id: "macritchie",
@@ -198,6 +219,7 @@ export const DESTINATIONS: Destination[] = [
     from: "Caldecott MRT",
     blurb: "Rainforest trails and a suspension bridge in the middle of the island.",
     highlights: ["TreeTop Walk", "Reservoir boardwalk", "Long-tailed macaques"],
+    costSgd: [2, 2.5],
   },
   {
     id: "changi-point",
@@ -210,6 +232,7 @@ export const DESTINATIONS: Destination[] = [
     from: "Tanah Merah MRT",
     blurb: "Old-school seaside village atmosphere, boardwalks and a long quiet beach.",
     highlights: ["Changi Boardwalk", "Changi Village hawker centre", "Sailing point"],
+    costSgd: [2.5, 3],
   },
 ];
 

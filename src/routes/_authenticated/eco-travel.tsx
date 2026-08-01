@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Clock, MapPin, Leaf, ExternalLink } from "lucide-react";
+import { Clock, MapPin, Leaf, ExternalLink, Wallet } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { getMe } from "@/lib/eco.functions";
 import {
@@ -11,6 +11,7 @@ import {
   baselineEmissionsKg,
   tripEmissionsKg,
   routeSummary,
+  formatCost,
   type TravelScope,
 } from "@/lib/travel";
 import { TRAVEL_IMAGES, googleMapsUrl } from "@/lib/travel-images";
@@ -120,8 +121,10 @@ function EcoTravelPage() {
             <div>
               <h2 className="font-display text-lg font-semibold">{selected.name} route summary</h2>
               <p className="text-xs text-muted-foreground">
-                {summary!.totalKm.toFixed(1)} km total · vs {summary!.baselineLabel}
+                {summary!.totalKm.toFixed(1)} km total · vs {summary!.baselineLabel} · avg fare{" "}
+                {formatCost(selected.costSgd)}
               </p>
+
             </div>
             <div className="rounded-xl bg-primary/10 px-4 py-2 text-right">
               <p className="text-[11px] font-medium uppercase tracking-wide text-primary">
@@ -216,12 +219,15 @@ function EcoTravelPage() {
                 </span>
               </div>
 
-              <dl className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+              <dl className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
                 <Fact icon={<MapPin className="size-3.5" />} label="Distance">
                   {d.distanceKm} km
                 </Fact>
                 <Fact icon={<Clock className="size-3.5" />} label="Journey">
                   {d.travelTime}
+                </Fact>
+                <Fact icon={<Wallet className="size-3.5" />} label="Avg cost">
+                  {formatCost(d.costSgd)}
                 </Fact>
                 <Fact icon={<Leaf className="size-3.5" />} label="Est. CO₂e">
                   {kg(emitted)}
@@ -231,7 +237,10 @@ function EcoTravelPage() {
                 </Fact>
               </dl>
 
-              <p className="mt-3 text-xs text-muted-foreground">Depart from {d.from}</p>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Depart from {d.from} · typical one-way fare {formatCost(d.costSgd)} per person
+              </p>
+
 
               <ul className="mt-3 flex flex-wrap gap-2">
                 {d.highlights.map((h) => (
