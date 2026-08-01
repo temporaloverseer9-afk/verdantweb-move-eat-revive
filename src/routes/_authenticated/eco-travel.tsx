@@ -285,7 +285,22 @@ function EcoTravelPage() {
 
               <p className="mt-3 text-xs text-muted-foreground">
                 Depart from {d.from} · typical one-way fare {formatCost(d.costSgd)} per person
+                {(() => {
+                  const cc = costComparison(d);
+                  return cc ? (
+                    <>
+                      {" "}
+                      · driving ≈ {formatCost(cc.car)} —{" "}
+                      <span className="font-semibold text-primary">
+                        save ~S${cc.savedMid.toFixed(2)} ({cc.savedPct}%)
+                      </span>
+                    </>
+                  ) : (
+                    <> · no road route (sea crossing only)</>
+                  );
+                })()}
               </p>
+
 
 
               <ul className="mt-3 flex flex-wrap gap-2">
