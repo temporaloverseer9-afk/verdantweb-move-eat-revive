@@ -33,7 +33,16 @@ export type Destination = {
   from: string;
   blurb: string;
   highlights: string[];
+  /** Typical one-way fare per person in SGD [low, high]. 0 = free. */
+  costSgd: [number, number];
 };
+
+/** Formats a fare range as SGD text. */
+export function formatCost([low, high]: [number, number]) {
+  if (low === 0 && high === 0) return "Free";
+  if (low === high) return `S$${low.toFixed(2)}`;
+  return `S$${low.toFixed(2)}–${high.toFixed(2)}`;
+}
 
 export const DESTINATIONS: Destination[] = [
   // ── International (low-carbon border hops) ─────────────────────────────
