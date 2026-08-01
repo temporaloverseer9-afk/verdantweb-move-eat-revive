@@ -131,8 +131,11 @@ function MapPage() {
             </p>
             <p className="text-xs text-muted-foreground">
               {new Date(latest.occurredAt).toLocaleString()} ·{" "}
-              {latest.verified ? "verified" : "unverified"} · route is snapped to real streets and
-              paths, since manual trips have no GPS trace.
+              {latest.verified ? "verified" : "unverified"} ·{" "}
+              {latest.path.length >= 2
+                ? `drawn from ${latest.pingCount} recorded GPS pings`
+                : "no GPS trace — route approximated on real streets"}
+
             </p>
           </div>
         ) : (
