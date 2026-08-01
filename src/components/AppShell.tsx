@@ -4,6 +4,8 @@ import { LayoutDashboard, ScrollText, Trophy, LogOut, Map, User } from "lucide-r
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import BrandLogo from "@/components/BrandLogo";
+
 
 const tabs = [
   { to: "/dashboard", label: "Scoreboard", icon: LayoutDashboard },
@@ -35,13 +37,8 @@ export function AppShell({
       <header className="sticky top-0 z-20 border-b border-border/70 bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <img
-              src="/verdantweb-logo.png"
-              alt="VerdantWeb"
-              width={36}
-              height={36}
-              className="size-9 rounded-xl object-cover"
-            />
+            <BrandLogo size={36} className="size-9 rounded-xl" />
+
             <span className="leading-tight">
               <span className="block font-display text-lg font-bold">VerdantWeb</span>
               <span className="block text-[11px] text-muted-foreground">EcoMove · Eco Food</span>
