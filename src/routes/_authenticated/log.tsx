@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { BadgeCheck, ShieldAlert, Trash2, Radar } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
+import { EcoFoodSection } from "@/components/EcoFoodSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,13 +15,13 @@ import { MODES, scoreTrip, type TransitMode } from "@/lib/eco";
 export const Route = createFileRoute("/_authenticated/log")({
   head: () => ({
     meta: [
-      { title: "Daily log — EcoMove" },
+      { title: "Daily log & Eco Food — VerdantWeb" },
       {
         name: "description",
         content:
           "Every trip you've taken, its verified transit mode, distance and the green points it earned.",
       },
-      { property: "og:title", content: "Daily log — EcoMove" },
+      { property: "og:title", content: "Daily log & Eco Food — VerdantWeb" },
       { property: "og:description", content: "Review verified trips and the points each one earned." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -198,7 +199,7 @@ function LogPage() {
         </Button>
       </section>
 
-      <section className="mt-6 space-y-6">
+      <section className="mt-6 max-h-[36rem] space-y-6 overflow-y-auto pr-1">
         {tripsQuery.isLoading && <p className="text-sm text-muted-foreground">Loading trips…</p>}
         {!tripsQuery.isLoading && list.length === 0 && (
           <p className="text-sm text-muted-foreground">No trips yet — log your first one above.</p>
@@ -257,6 +258,8 @@ function LogPage() {
           </div>
         ))}
       </section>
+
+      <EcoFoodSection />
     </AppShell>
   );
 }
