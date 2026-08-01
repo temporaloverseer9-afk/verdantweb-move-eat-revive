@@ -50,6 +50,12 @@ function EcoTravelPage() {
     setSelectedId(null);
   }, [scope]);
 
+  const places = useMemo(
+    () =>
+      DESTINATIONS.filter((d) => d.scope === scope).sort((a, b) => a.distanceKm - b.distanceKm),
+    [scope],
+  );
+
   const selected = useMemo(
     () => places.find((d) => d.id === selectedId) ?? null,
     [places, selectedId],
@@ -60,11 +66,6 @@ function EcoTravelPage() {
     if (selectedId) cardRefs.current[selectedId]?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [selectedId]);
 
-  const places = useMemo(
-    () =>
-      DESTINATIONS.filter((d) => d.scope === scope).sort((a, b) => a.distanceKm - b.distanceKm),
-    [scope],
-  );
 
   return (
     <AppShell username={profileQuery.data?.username}>
