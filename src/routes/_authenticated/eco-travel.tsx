@@ -235,14 +235,22 @@ function EcoTravelPage() {
 
               <ul className="mt-3 flex flex-wrap gap-2">
                 {d.highlights.map((h) => (
-                  <li
-                    key={h}
-                    className="rounded-full border border-border px-2.5 py-1 text-xs text-muted-foreground"
-                  >
-                    {h}
+                  <li key={h}>
+                    <a
+                      href={googleMapsUrl(h, `${d.name}, ${d.country}`)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label={`Open ${h} near ${d.name} in Google Maps`}
+                      className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                    >
+                      {h}
+                      <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                    </a>
                   </li>
                 ))}
               </ul>
+
             </li>
           );
         })}
