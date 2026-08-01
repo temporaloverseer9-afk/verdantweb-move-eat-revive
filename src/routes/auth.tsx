@@ -87,12 +87,15 @@ function AuthPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
       <div className="w-full max-w-sm">
-        <Link to="/" className="mb-8 flex items-center gap-2">
-          <span className="gradient-eco flex size-9 items-center justify-center rounded-xl text-primary-foreground">
-            <Leaf className="size-5" />
-          </span>
-          <span className="font-display text-lg font-bold">EcoMove</span>
-        </Link>
+        <div className="mb-8 flex items-center justify-between gap-2">
+          <Link to="/" className="flex items-center gap-2">
+            <span className="gradient-eco flex size-9 items-center justify-center rounded-xl text-primary-foreground">
+              <Leaf className="size-5" />
+            </span>
+            <span className="font-display text-lg font-bold">VerdantWeb</span>
+          </Link>
+          <ThemeToggle />
+        </div>
 
         <h1 className="text-2xl font-bold">
           {mode === "signup" ? "Create your account" : "Welcome back"}
