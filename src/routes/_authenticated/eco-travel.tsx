@@ -121,8 +121,10 @@ function EcoTravelPage() {
             <div>
               <h2 className="font-display text-lg font-semibold">{selected.name} route summary</h2>
               <p className="text-xs text-muted-foreground">
-                {summary!.totalKm.toFixed(1)} km total · vs {summary!.baselineLabel}
+                {summary!.totalKm.toFixed(1)} km total · vs {summary!.baselineLabel} · avg fare{" "}
+                {formatCost(selected.costSgd)}
               </p>
+
             </div>
             <div className="rounded-xl bg-primary/10 px-4 py-2 text-right">
               <p className="text-[11px] font-medium uppercase tracking-wide text-primary">
