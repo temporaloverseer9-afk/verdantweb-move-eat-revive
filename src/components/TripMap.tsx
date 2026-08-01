@@ -169,34 +169,44 @@ export default function TripMap({
         .bindTooltip("You are here"),
     );
 
+    const controller = new AbortController();
+
     if (trip) {
-      const route = buildRoute(center, trip.distanceKm, trip.id);
-      const line = L.polyline(route, {
-        color: trip.points >= 0 ? "#16a34a" : "#dc2626",
-        weight: 5,
-        opacity: 0.85,
-      }).addTo(map);
-      layers.push(line);
-      layers.push(
-        L.circleMarker(route[route.length - 1]!, {
-          radius: 7,
-          color: "#ffffff",
-          weight: 3,
-          fillColor: trip.points >= 0 ? "#16a34a" : "#dc2626",
-          fillOpacity: 1,
-        })
-          .addTo(map)
-          .bindTooltip("Trip end"),
-      );
-      map.fitBounds(line.getBounds().pad(0.25));
+      const draw = (route: [number, number][]) => {
+        if (controller.signal.aborted || !mapRef.current) return;
+        const line = L.polyline(route, {
+          color: trip.points >= 0 ? "#16a34a" : "#dc2626",
+          weight: 5,
+          opacity: 0.85,
+        }).addTo(map);
+        layers.push(line);
+        layers.push(
+          L.circleMarker(route[route.length - 1]!, {
+            radius: 7,
+            color: "#ffffff",
+            weight: 3,
+            fillColor: trip.points >= 0 ? "#16a34a" : "#dc2626",
+            fillOpacity: 1,
+          })
+            .addTo(map)
+            .bindTooltip("Trip end"),
+        );
+        map.fitBounds(line.getBounds().pad(0.25));
+      };
+
+      buildRoadRoute(center, trip.distanceKm, trip.id, controller.signal)
+        .then((road) => draw(road ?? buildRoute(center, trip.distanceKm, trip.id)))
+        .catch(() => draw(buildRoute(center, trip.distanceKm, trip.id)));
     } else {
       map.setView(center, 14);
     }
 
     return () => {
+      controller.abort();
       layers.forEach((l) => l.remove());
     };
   }, [center[0], center[1], trip?.id]);
+
 
   return <div ref={nodeRef} className="h-[420px] w-full rounded-xl" />;
 }
