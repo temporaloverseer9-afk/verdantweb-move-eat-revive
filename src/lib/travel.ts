@@ -222,3 +222,53 @@ export function baselineEmissionsKg(d: Destination) {
   const factor = d.scope === "international" ? FLIGHT_G_PER_KM : CAR_G_PER_KM;
   return (d.distanceKm * factor) / 1000;
 }
+
+/** Where every journey starts from, for map routes. */
+export const SG_CENTER: [number, number] = [1.3521, 103.8198];
+
+/** Departure point coordinates, keyed by destination id. */
+export const DEPARTURE_COORDS: Record<string, [number, number]> = {
+  "johor-bahru": [1.4382, 103.7614], // Kranji / Woodlands checkpoint
+  batam: [1.2644, 103.8203], // HarbourFront Centre
+  bintan: [1.3243, 103.9884], // Tanah Merah Ferry Terminal
+  desaru: [1.3243, 103.9884],
+  melaka: [1.3072, 103.8635], // Golden Mile Complex
+  "kuala-lumpur": [1.4382, 103.7691], // Woodlands CIQ
+  penang: [1.4382, 103.7691],
+  "pulau-ubin": [1.3903, 103.9885], // Changi Point Ferry Terminal
+  "coney-island": [1.4043, 103.9092], // Punggol Waterway
+  "southern-ridges": [1.2653, 103.8221], // HarbourFront MRT
+  "sungei-buloh": [1.4251, 103.7620], // Kranji MRT
+  "st-johns": [1.2712, 103.8632], // Marina South Pier
+  macritchie: [1.3378, 103.8395], // Caldecott MRT
+  "changi-point": [1.3244, 103.9463], // Tanah Merah MRT
+};
+
+/** Destination coordinates, keyed by destination id. */
+export const DESTINATION_COORDS: Record<string, [number, number]> = {
+  "johor-bahru": [1.4927, 103.7414],
+  batam: [1.1301, 104.0529],
+  bintan: [1.1541, 104.5000],
+  desaru: [1.5533, 104.2650],
+  melaka: [2.1896, 102.2501],
+  "kuala-lumpur": [3.1390, 101.6869],
+  penang: [5.4141, 100.3288],
+  "pulau-ubin": [1.4043, 103.9631],
+  "coney-island": [1.4114, 103.9214],
+  "southern-ridges": [1.2795, 103.8028],
+  "sungei-buloh": [1.4460, 103.7292],
+  "st-johns": [1.2200, 103.8480],
+  macritchie: [1.3444, 103.8250],
+  "changi-point": [1.3899, 103.9887],
+};
+
+/** Line style for a route drawn on the map, by mode. */
+export const MODE_ROUTE_STYLE: Record<TravelMode, { color: string; dash?: string }> = {
+  walk: { color: "#16a34a", dash: "2 8" },
+  cycle: { color: "#0d9488", dash: "6 6" },
+  mrt: { color: "#7c3aed" },
+  train: { color: "#2563eb" },
+  bus: { color: "#ea580c", dash: "10 6" },
+  coach: { color: "#b45309", dash: "12 6" },
+  ferry: { color: "#0284c7", dash: "4 8" },
+};
