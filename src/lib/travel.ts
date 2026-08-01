@@ -272,3 +272,65 @@ export const MODE_ROUTE_STYLE: Record<TravelMode, { color: string; dash?: string
   coach: { color: "#b45309", dash: "12 6" },
   ferry: { color: "#0284c7", dash: "4 8" },
 };
+
+export type RouteLeg = {
+  label: string;
+  mode: TravelMode;
+  distanceKm: number;
+  emissionsKg: number;
+};
+
+function haversineKm(a: [number, number], b: [number, number]) {
+  const R = 6371;
+  const dLat = ((b[0] - a[0]) * Math.PI) / 180;
+  const dLng = ((b[1] - a[1]) * Math.PI) / 180;
+  const la1 = (a[0] * Math.PI) / 180;
+  const la2 = (b[0] * Math.PI) / 180;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+/**
+ * Breaks a journey into legs: getting to the departure point by MRT (when it is
+ * a meaningful distance from the city centre), then the main low-carbon leg.
+ */
+export function routeLegs(d: Destination): RouteLeg[] {
+  const legs: RouteLeg[] = [];
+  const dep = DEPARTURE_COORDS[d.id];
+  if (dep) {
+    const accessKm = Math.round(haversineKm(SG_CENTER, dep) * 10) / 10;
+    if (accessKm >= 1) {
+      legs.push({
+        label: `City centre → ${d.from}`,
+        mode: "mrt",
+        distanceKm: accessKm,
+        emissionsKg: (accessKm * TRAVEL_MODES.mrt.gPerKm) / 1000,
+      });
+    }
+  }
+  legs.push({
+    label: `${d.from} → ${d.name}`,
+    mode: d.mode,
+    distanceKm: d.distanceKm,
+    emissionsKg: tripEmissionsKg(d),
+  });
+  return legs;
+}
+
+/** Totals for the selected route, including savings vs the usual alternative. */
+export function routeSummary(d: Destination) {
+  const legs = routeLegs(d);
+  const totalKm = legs.reduce((s, l) => s + l.distanceKm, 0);
+  const totalKg = legs.reduce((s, l) => s + l.emissionsKg, 0);
+  const baselineKg = (totalKm * (d.scope === "international" ? FLIGHT_G_PER_KM : CAR_G_PER_KM)) / 1000;
+  const savedKg = Math.max(0, baselineKg - totalKg);
+  return {
+    legs,
+    totalKm,
+    totalKg,
+    baselineKg,
+    savedKg,
+    savedPct: baselineKg > 0 ? Math.round((savedKg / baselineKg) * 100) : 0,
+    baselineLabel: d.scope === "international" ? "flying" : "driving",
+  };
+}
