@@ -357,3 +357,56 @@ export function routeSummary(d: Destination) {
     baselineLabel: d.scope === "international" ? "flying" : "driving",
   };
 }
+
+// ── Cost comparison: eco transport vs driving yourself ──────────────────
+
+/** Running cost of a private car in SGD per km (fuel, tyres, wear) [low, high]. */
+export const CAR_SGD_PER_KM: [number, number] = [0.32, 0.55];
+/** Typical ERP + parking for a local day trip [low, high]. */
+export const LOCAL_DRIVE_EXTRAS: [number, number] = [4, 14];
+/** Causeway/second-link tolls, VEP and Malaysian parking, one-way [low, high]. */
+export const CROSS_BORDER_DRIVE_EXTRAS: [number, number] = [12, 28];
+/** Ride-hailing / taxi: flagdown [low, high] plus per-km [low, high]. */
+export const RIDE_HAIL_BASE: [number, number] = [4, 6];
+export const RIDE_HAIL_PER_KM: [number, number] = [1.0, 1.7];
+
+/** Destinations you simply cannot drive to — island or sea crossings. */
+const NOT_DRIVABLE = new Set(["batam", "bintan", "pulau-ubin", "st-johns"]);
+
+export function isDrivable(d: Destination) {
+  return !NOT_DRIVABLE.has(d.id);
+}
+
+/**
+ * Estimated one-way cost of the same journey by private car and by taxi /
+ * ride-hail, compared with the eco fare. Ride-hail is only meaningful for
+ * journeys inside Singapore.
+ */
+export function costComparison(d: Destination) {
+  if (!isDrivable(d)) return null;
+  const extras = d.scope === "international" ? CROSS_BORDER_DRIVE_EXTRAS : LOCAL_DRIVE_EXTRAS;
+  const car: [number, number] = [
+    d.distanceKm * CAR_SGD_PER_KM[0] + extras[0],
+    d.distanceKm * CAR_SGD_PER_KM[1] + extras[1],
+  ];
+  const rideHail: [number, number] | null =
+    d.scope === "local"
+      ? [
+          RIDE_HAIL_BASE[0] + d.distanceKm * RIDE_HAIL_PER_KM[0],
+          RIDE_HAIL_BASE[1] + d.distanceKm * RIDE_HAIL_PER_KM[1],
+        ]
+      : null;
+  const eco = d.costSgd;
+  const ecoMid = (eco[0] + eco[1]) / 2;
+  const carMid = (car[0] + car[1]) / 2;
+  const savedMid = Math.max(0, carMid - ecoMid);
+  return {
+    eco,
+    car,
+    rideHail,
+    savedRange: [Math.max(0, car[0] - eco[1]), Math.max(0, car[1] - eco[0])] as [number, number],
+    savedMid,
+    savedPct: carMid > 0 ? Math.round((savedMid / carMid) * 100) : 0,
+    rideHailSavedMid: rideHail ? Math.max(0, (rideHail[0] + rideHail[1]) / 2 - ecoMid) : null,
+  };
+}
