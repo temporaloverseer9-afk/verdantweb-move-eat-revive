@@ -107,6 +107,8 @@ function MapPage() {
                       distanceKm: latest.distanceKm,
                       verified: latest.verified,
                       points: latest.points,
+                      path: latest.path as [number, number][],
+
                     }
                   : null
               }
