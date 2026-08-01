@@ -4,6 +4,8 @@ import { LayoutDashboard, ScrollText, Trophy, LogOut, Map, User } from "lucide-r
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import BrandLogo from "@/components/BrandLogo";
+
 
 const tabs = [
   { to: "/dashboard", label: "Scoreboard", icon: LayoutDashboard },
