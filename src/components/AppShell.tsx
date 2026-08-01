@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { LayoutDashboard, ScrollText, Trophy, LogOut, Map, User, Cloud } from "lucide-react";
+import { LayoutDashboard, ScrollText, Trophy, LogOut, Map, User, Cloud, Compass } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -11,8 +11,9 @@ const tabs = [
   { to: "/dashboard", label: "Scoreboard", icon: LayoutDashboard },
   { to: "/log", label: "Daily log", icon: ScrollText },
   { to: "/map", label: "Map", icon: Map },
+  { to: "/eco-travel", label: "Eco travel", icon: Compass },
   { to: "/footprint", label: "CO₂", icon: Cloud },
-  { to: "/leaderboard", label: "Leaderboard", icon: Trophy },
+  { to: "/leaderboard", label: "Ranks", icon: Trophy },
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
 
