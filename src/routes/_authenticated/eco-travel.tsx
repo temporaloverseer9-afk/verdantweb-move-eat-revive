@@ -217,12 +217,15 @@ function EcoTravelPage() {
                 </span>
               </div>
 
-              <dl className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+              <dl className="mt-4 grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
                 <Fact icon={<MapPin className="size-3.5" />} label="Distance">
                   {d.distanceKm} km
                 </Fact>
                 <Fact icon={<Clock className="size-3.5" />} label="Journey">
                   {d.travelTime}
+                </Fact>
+                <Fact icon={<Wallet className="size-3.5" />} label="Avg cost">
+                  {formatCost(d.costSgd)}
                 </Fact>
                 <Fact icon={<Leaf className="size-3.5" />} label="Est. CO₂e">
                   {kg(emitted)}
@@ -232,7 +235,10 @@ function EcoTravelPage() {
                 </Fact>
               </dl>
 
-              <p className="mt-3 text-xs text-muted-foreground">Depart from {d.from}</p>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Depart from {d.from} · typical one-way fare {formatCost(d.costSgd)} per person
+              </p>
+
 
               <ul className="mt-3 flex flex-wrap gap-2">
                 {d.highlights.map((h) => (
