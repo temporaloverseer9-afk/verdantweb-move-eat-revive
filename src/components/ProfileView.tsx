@@ -77,9 +77,7 @@ export function ProfileView({ userId }: { userId?: string }) {
           {isSelf && (
             <section className="mt-8">
               <h2 className="font-display text-lg font-bold">Pick your animal</h2>
-              <p className="text-sm text-muted-foreground">
-                Friendly animal avatars only — nothing rude allowed.
-              </p>
+              <p className="text-sm text-muted-foreground">Choose a friendly animal avatar.</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {AVATAR_CHOICES.map((a) => (
                   <button

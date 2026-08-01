@@ -13,9 +13,9 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Sign in — VerdantWeb" },
-      { name: "description", content: "Sign in or create your EcoMove account to start earning green points for walking, cycling and transit trips." },
+      { name: "description", content: "Sign in or create your Verdant Green account to start earning green points for walking, cycling and transit trips." },
       { property: "og:title", content: "Sign in — VerdantWeb" },
-      { property: "og:description", content: "Create your EcoMove account and start scoring your daily travel." },
+      { property: "og:description", content: "Create your Verdant Green account and start scoring your daily travel." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -159,7 +159,7 @@ function AuthPage() {
         </Button>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          {mode === "signup" ? "Already have an account?" : "New to EcoMove?"}{" "}
+          {mode === "signup" ? "Already have an account?" : "New to Verdant Green?"}{" "}
           <button
             type="button"
             className="font-medium text-primary underline-offset-4 hover:underline"
