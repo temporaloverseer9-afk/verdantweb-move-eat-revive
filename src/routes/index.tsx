@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Leaf, Footprints, Bike, Bus, Car } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -53,9 +54,12 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-3xl px-4 py-16">
-        <span className="gradient-eco inline-flex size-12 items-center justify-center rounded-2xl text-primary-foreground shadow-lift">
-          <Leaf className="size-6" />
-        </span>
+        <div className="flex items-center justify-between gap-2">
+          <span className="gradient-eco inline-flex size-12 items-center justify-center rounded-2xl text-primary-foreground shadow-lift">
+            <Leaf className="size-6" />
+          </span>
+          <ThemeToggle />
+        </div>
         <h1 className="mt-6 text-4xl font-bold sm:text-5xl">
           Every kilometre you move counts.
         </h1>

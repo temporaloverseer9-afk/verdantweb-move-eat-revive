@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Leaf, LayoutDashboard, ScrollText, Trophy, LogOut, Map } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const tabs = [
   { to: "/dashboard", label: "Scoreboard", icon: LayoutDashboard },
@@ -45,6 +46,7 @@ export function AppShell({
             {username ? (
               <span className="hidden text-sm text-muted-foreground sm:inline">@{username}</span>
             ) : null}
+            <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={signOut}>
               <LogOut className="size-4" />
               <span className="sr-only sm:not-sr-only">Sign out</span>
