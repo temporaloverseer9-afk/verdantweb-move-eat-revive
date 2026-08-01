@@ -73,34 +73,49 @@ export type Database = {
       }
       trips: {
         Row: {
+          accuracy_m: number | null
           avg_speed_kmh: number
           created_at: string
           distance_km: number
+          duration_s: number | null
+          gps_path: Json | null
           id: string
+          max_speed_kmh: number | null
           mode: Database["public"]["Enums"]["transit_mode"]
           occurred_at: string
+          ping_count: number
           points: number
           user_id: string
           verified: boolean
         }
         Insert: {
+          accuracy_m?: number | null
           avg_speed_kmh: number
           created_at?: string
           distance_km: number
+          duration_s?: number | null
+          gps_path?: Json | null
           id?: string
+          max_speed_kmh?: number | null
           mode: Database["public"]["Enums"]["transit_mode"]
           occurred_at?: string
+          ping_count?: number
           points?: number
           user_id: string
           verified?: boolean
         }
         Update: {
+          accuracy_m?: number | null
           avg_speed_kmh?: number
           created_at?: string
           distance_km?: number
+          duration_s?: number | null
+          gps_path?: Json | null
           id?: string
+          max_speed_kmh?: number | null
           mode?: Database["public"]["Enums"]["transit_mode"]
           occurred_at?: string
+          ping_count?: number
           points?: number
           user_id?: string
           verified?: boolean
