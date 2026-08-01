@@ -49,18 +49,21 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar: string
           created_at: string
           id: string
           total_points: number
           username: string
         }
         Insert: {
+          avatar?: string
           created_at?: string
           id: string
           total_points?: number
           username: string
         }
         Update: {
+          avatar?: string
           created_at?: string
           id?: string
           total_points?: number
@@ -109,9 +112,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      public_profile_stats: {
+        Args: { _user_id: string }
+        Returns: {
+          avatar: string
+          food_points: number
+          green_km: number
+          joined_at: string
+          meal_count: number
+          total_points: number
+          trip_count: number
+          trip_points: number
+          user_id: string
+          username: string
+          weekly_points: number
+        }[]
+      }
       weekly_leaderboard: {
         Args: never
         Returns: {
+          avatar: string
           total_points: number
           user_id: string
           username: string
