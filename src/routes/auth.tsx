@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Leaf } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
