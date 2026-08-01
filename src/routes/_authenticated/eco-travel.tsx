@@ -12,6 +12,7 @@ import {
   tripEmissionsKg,
   routeSummary,
   formatCost,
+  costComparison,
   type TravelScope,
 } from "@/lib/travel";
 import { TRAVEL_IMAGES, googleMapsUrl } from "@/lib/travel-images";
