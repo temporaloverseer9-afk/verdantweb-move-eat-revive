@@ -46,19 +46,48 @@ export function TripTracker() {
       setPermission("denied");
       return;
     }
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
+
+    const onFix = (pos: GeolocationPosition) => {
+      setPermission("granted");
+      setLive({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        t: pos.timestamp,
+        acc: pos.coords.accuracy,
+      });
+    };
+
+    const attempt = (highAccuracy: boolean) => {
+      navigator.geolocation.getCurrentPosition(onFix, (err) => {
+        // Only an explicit browser denial means "denied". Timeouts and
+        // temporary "position unavailable" errors are common indoors and on
+        // first fix — retry with a coarse fix instead of locking the UI.
+        if (err.code === err.PERMISSION_DENIED) {
+          setPermission("denied");
+          return;
+        }
+        if (highAccuracy) {
+          attempt(false);
+          return;
+        }
         setPermission("granted");
-        setLive({
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-          t: pos.timestamp,
-          acc: pos.coords.accuracy,
-        });
-      },
-      () => setPermission("denied"),
-      { enableHighAccuracy: true, timeout: 15000 },
-    );
+      }, { enableHighAccuracy: highAccuracy, timeout: highAccuracy ? 20000 : 30000, maximumAge: highAccuracy ? 0 : 60000 });
+    };
+
+    // Trust an already-granted permission immediately so a slow fix never
+    // shows the "access required" screen.
+    const perms = (navigator as Navigator & { permissions?: Permissions }).permissions;
+    if (perms?.query) {
+      perms
+        .query({ name: "geolocation" as PermissionName })
+        .then((status) => {
+          if (status.state === "granted") setPermission("granted");
+          if (status.state === "denied") setPermission("denied");
+        })
+        .catch(() => undefined);
+    }
+
+    attempt(true);
   }, []);
 
   useEffect(() => {
