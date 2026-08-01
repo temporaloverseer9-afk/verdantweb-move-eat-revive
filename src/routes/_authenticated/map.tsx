@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -10,7 +10,8 @@ import { MODES, type TransitMode } from "@/lib/eco";
 
 const TripMap = lazy(() => import("@/components/TripMap"));
 
-const FALLBACK_CENTER: [number, number] = [51.5074, -0.1278];
+// VerdantWeb is Singapore-centred, so fall back to the city centre here.
+const FALLBACK_CENTER: [number, number] = [1.3521, 103.8198];
 
 export const Route = createFileRoute("/_authenticated/map")({
   head: () => ({
@@ -40,31 +41,54 @@ function MapPage() {
   const tripsQuery = useQuery({ queryKey: ["trips"], queryFn: () => trips({}) });
 
   const [center, setCenter] = useState<[number, number] | null>(null);
+  const [accuracy, setAccuracy] = useState<number | null>(null);
   const [status, setStatus] = useState<"idle" | "locating" | "denied">("idle");
+  const watchId = useRef<number | null>(null);
 
-  function locate() {
+  const clearWatch = useCallback(() => {
+    if (watchId.current !== null && typeof navigator !== "undefined") {
+      navigator.geolocation.clearWatch(watchId.current);
+      watchId.current = null;
+    }
+  }, []);
+
+  const locate = useCallback(() => {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
       setStatus("denied");
       setCenter(FALLBACK_CENTER);
       return;
     }
+    clearWatch();
     setStatus("locating");
-    navigator.geolocation.getCurrentPosition(
+    let best = Infinity;
+    const started = Date.now();
+    // Keep sampling until the fix tightens up — the first fix is often a
+    // coarse IP/wifi guess that can be hundreds of km off.
+    watchId.current = navigator.geolocation.watchPosition(
       (pos) => {
-        setCenter([pos.coords.latitude, pos.coords.longitude]);
+        const acc = pos.coords.accuracy ?? Infinity;
+        if (acc <= best) {
+          best = acc;
+          setCenter([pos.coords.latitude, pos.coords.longitude]);
+          setAccuracy(acc);
+        }
         setStatus("idle");
+        if (acc <= 50 || Date.now() - started > 20000) clearWatch();
       },
       () => {
+        clearWatch();
         setStatus("denied");
-        setCenter(FALLBACK_CENTER);
+        setCenter((c) => c ?? FALLBACK_CENTER);
       },
-      { enableHighAccuracy: true, timeout: 10000 },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 25000 },
     );
-  }
+  }, [clearWatch]);
 
   useEffect(() => {
     locate();
-  }, []);
+    return clearWatch;
+  }, [locate, clearWatch]);
+
 
   const latest = tripsQuery.data?.[0] ?? null;
 
@@ -82,11 +106,16 @@ function MapPage() {
         </Button>
       </div>
 
-      {status === "denied" && (
+      {status === "denied" ? (
         <p className="mt-3 text-xs text-muted-foreground">
-          Location unavailable — showing a default city centre instead.
+          Location unavailable — showing Singapore city centre instead.
         </p>
-      )}
+      ) : accuracy !== null ? (
+        <p className="mt-3 text-xs text-muted-foreground">
+          GPS fix accurate to ±{Math.round(accuracy)} m
+          {accuracy > 200 ? " — move outdoors for a sharper fix." : "."}
+        </p>
+      ) : null}
 
       <section className="surface-card mt-5 overflow-hidden p-2">
         {center ? (
