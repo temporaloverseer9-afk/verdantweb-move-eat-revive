@@ -68,8 +68,10 @@ function Dashboard() {
 
   return (
     <AppShell username={profileQuery.data?.username}>
+      <h1 className="font-display mb-4 text-2xl font-bold">Your Eco-Scoreboard</h1>
       <section className="gradient-eco shadow-lift relative overflow-hidden rounded-3xl p-6 text-primary-foreground">
         <p className="text-sm/6 opacity-90">Today's eco-score</p>
+
         <p className="font-display mt-1 text-6xl font-bold tabular-nums">
           {dailyPoints > 0 ? "+" : ""}
           {dailyPoints}
